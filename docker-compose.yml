@@ -1,0 +1,27 @@
+
+services:
+  flowforge-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: flowforge-ai-api:latest
+    container_name: flowforge-api
+
+    ports:
+      - "127.0.0.1:8005:8000"
+
+    environment:
+      N8N_WEBHOOK_URL: "http://flowforge-n8n:5678/webhook/customer-request"
+      FLOWFORGE_API_KEY: ${FLOWFORGE_API_KEY:?Set FLOWFORGE_API_KEY}
+      N8N_WEBHOOK_SECRET: ${N8N_WEBHOOK_SECRET:?Set N8N_WEBHOOK_SECRET}
+
+    networks:
+      - flowforge-network
+
+    restart: unless-stopped
+
+networks:
+  flowforge-network:
+    external: true
+    name: flowforge-network

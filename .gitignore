@@ -1,0 +1,27 @@
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Local data and credentials
+*.db
+*.sqlite
+*.sqlite3
+credentials.json
+secrets.json
+/workflows/FlowForge AI - Customer Request Intake.json

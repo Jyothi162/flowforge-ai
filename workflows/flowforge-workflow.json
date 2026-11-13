@@ -1,0 +1,1511 @@
+{
+  "name": "FlowForge AI - Customer Request Intake",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "customer-request",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4d7caf96-bf5e-4ede-b669-7e225090107d",
+      "name": "Webhook",
+      "webhookId": "9342bb68-a51c-43bc-ae96-007208c14b7a",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "T6306BdtBzlgHRd2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c19973b0-0047-4714-b396-f64b75416409",
+              "name": "customer_name",
+              "value": "={{ $json.body.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "3a4eb89b-79b0-4f47-b56c-6cbcc95ac260",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "b412d95f-9036-4545-8b9b-c1100ac89e39",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "121b860a-6568-4acc-a94b-e6332a1b7ba0",
+              "name": "priority",
+              "value": "={{ $json.body.priority }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "5386b74e-07a9-4680-b1d6-3d8cfd583dfc",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "42ffd4a9-b080-4271-9533-eee333fd030b",
+              "leftValue": "\t{{ $json.customer_name }}",
+              "rightValue": "is not empty",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "1241b12b-912a-41cb-b3aa-3ef5e681917c",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4355d762-b0fa-4352-8d75-5b269af71ab2",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "1716b42e-3880-4420-aeee-8db839014674",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fbf549ea-1215-4a4d-bcaf-88f2de9064d6",
+              "name": "=customer_name",
+              "value": "={{ $json.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "111e931d-42e0-436a-9171-33876cb4cbb8",
+              "name": "=email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "2bebc93e-a471-47a0-b0d5-162d88bc8610",
+              "name": "=message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "8d0d3f48-e3c6-4620-bd27-954284578a70",
+              "name": "priority",
+              "value": "={{ $json.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "c5453154-5f12-4a91-b6fe-a08e3e5fda88",
+              "name": "status",
+              "value": "\treceived",
+              "type": "string"
+            },
+            {
+              "id": "de7452f6-5f04-4008-88f5-45db56333c7c",
+              "name": "validation",
+              "value": "passed",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "906e8bcd-e4ac-4813-9bde-7383001c0e50",
+      "name": "Valid Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c5b9f9f4-79dd-451e-9f29-48b558eb5b5f",
+              "name": "status",
+              "value": "rejected",
+              "type": "string"
+            },
+            {
+              "id": "01b23b56-c609-4764-b313-b7c59eed4136",
+              "name": "validation",
+              "value": "failed",
+              "type": "string"
+            },
+            {
+              "id": "9eb45e32-8a35-493b-b465-8aeef1cd9bea",
+              "name": "error_message",
+              "value": "Required customer information is missing",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        96
+      ],
+      "id": "488d7d81-68a5-4eb9-9cbc-633f56725f93",
+      "name": "Invalid Request."
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Classify the following customer request into exactly one category:\n\norder\nbilling\ntechnical_support\ngeneral_inquiry\n\nCustomer message:\n{{ $json.message }}\n\nReturn only the category name.\nDo not include explanations or additional text.",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a customer support classification assistant. Classify each customer request accurately. Return only one of these categories: order, billing, technical_support, general_inquiry."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1792,
+        -96
+      ],
+      "id": "1734b2f6-17a9-4193-b223-9a6b68afc9e7",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        112
+      ],
+      "id": "51c683eb-9816-42be-bead-3169b0bf58fc",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "zUqg9GZEBHd31OQA",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8abccb18-a57c-489e-a0b1-c6b6e31bd6f2",
+              "name": "category",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2160,
+        -96
+      ],
+      "id": "b4930fce-f731-4695-8769-1dc8c3d6797f",
+      "name": "AI Classification Result"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.category.trim() }}",
+                    "rightValue": "order",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5f4016b8-9581-4f46-af64-8ff721bb80a1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "6581b787-69f2-4a89-8299-b20074f477a0",
+                    "leftValue": "={{ $json.category.trim() }}",
+                    "rightValue": "billing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "77221010-54bd-41b9-a082-1c821f0e90a1",
+                    "leftValue": "={{ $json.category.trim().toLowerCase() }}",
+                    "rightValue": "technical_support",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": ""
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "bff3b681-0bc2-4400-9a78-acf0f5443bf4",
+                    "leftValue": "={{ $json.category.trim() }}",
+                    "rightValue": "general_inquiry",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        2384,
+        -96
+      ],
+      "id": "cbc2deae-e004-472c-acaf-7b4367f3e993",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ce0af46-08d9-4251-99ad-78f1a093cc7d",
+              "name": "status",
+              "value": "received",
+              "type": "string"
+            },
+            {
+              "id": "385f96b0-9bce-45bf-a59c-362fceb0e49b",
+              "name": "department",
+              "value": "billing",
+              "type": "string"
+            },
+            {
+              "id": "3245b5ab-b355-41ed-8d72-dd96b635ed33",
+              "name": "response",
+              "value": "Your billing request has been received. Our billing team will review it",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2704,
+        -128
+      ],
+      "id": "73ebe27e-a0f3-4f9d-94f3-63022e75cec2",
+      "name": "Billing Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6845c6d-c874-4c6b-a31d-adc20791734b",
+              "name": "department",
+              "value": "order",
+              "type": "string"
+            },
+            {
+              "id": "ee3b7e20-cf78-4a3c-a223-1d02129467ac",
+              "name": "status",
+              "value": "received",
+              "type": "string"
+            },
+            {
+              "id": "7d9002ad-616a-46a3-86f7-f1e032919b4b",
+              "name": "response",
+              "value": "Your order request has been received. Our order team will review it",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2640,
+        -272
+      ],
+      "id": "7234e322-fd14-4abe-a3ef-8e4848bf57cd",
+      "name": "Order Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1a01f56a-357d-4090-851c-d9f9416825bb",
+              "name": "department",
+              "value": "technical_support",
+              "type": "string"
+            },
+            {
+              "id": "8ec8477f-f3d9-4bab-8f2a-7fb5aff6d859",
+              "name": "status",
+              "value": "received",
+              "type": "string"
+            },
+            {
+              "id": "5eb8941c-6a4e-415f-995f-8ab4782be1c1",
+              "name": "response",
+              "value": "Your technical support request has been received. Our technical support team will review it",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2720,
+        16
+      ],
+      "id": "cbe63368-fb94-4e1a-8f78-d366b11f27ac",
+      "name": "Technical Support Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "41403bc6-e6c9-4be8-9093-6ff884cb4357",
+              "name": "department",
+              "value": "general_inquiry",
+              "type": "string"
+            },
+            {
+              "id": "5f2aaa9e-dab9-45fd-920d-9997a20cff72",
+              "name": "status",
+              "value": "received",
+              "type": "string"
+            },
+            {
+              "id": "6db6f6a8-ac49-4ff8-88bc-d4599467dd9a",
+              "name": "response",
+              "value": "Your inquiry has been received. Our customer service team will review it",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2736,
+        256
+      ],
+      "id": "76ca7d7c-8c83-448f-be27-9436fcf6fe41",
+      "name": "General Inquiry Response"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "customer_requests",
+          "mode": "list",
+          "cachedResultName": "customer_requests"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request_id": "={{ $('Webhook').item.json.body.request_id }}",
+            "customer_name": "={{ $('Webhook').item.json.body.customer_name }}",
+            "email": "={{ $('Webhook').item.json.body.email }}",
+            "message": "={{ $('Webhook').item.json.body.message }}",
+            "priority": "={{ $('Webhook').item.json.body.priority }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "department",
+              "displayName": "department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "response",
+              "displayName": "response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        1552,
+        16
+      ],
+      "id": "0556caf6-73ae-4c09-afb3-4814089faf16",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "YOY5ysAb7BL7Ryep",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": "customer_requests"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request_id": "={{ $('Webhook').item.json.body.request_id }}",
+            "category": "={{ $('AI Classification Result').item.json.category }}",
+            "department": "={{ $json.department }}",
+            "status": "processed",
+            "response": "={{ $json.response }}",
+            "updated_at": "={{ $now.toISO() }}",
+            "approval_decision": "={{ $('Webhook').first().json.body.priority === 'high' ? 'approved' : null }}",
+            "approval_timestamp": "={{ $('Webhook').first().json.body.priority === 'high' ? $('Wait for Human Approval').first().json.submittedAt : null }}"
+          },
+          "matchingColumns": [
+            "request_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "department",
+              "displayName": "department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "response",
+              "displayName": "response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "approval_decision",
+              "displayName": "approval_decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "approved_by",
+              "displayName": "approved_by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "approval_timestamp",
+              "displayName": "approval_timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        2960,
+        -112
+      ],
+      "id": "60da4f51-629b-4720-9cb4-2ef7d188d72b",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "YOY5ysAb7BL7Ryep",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "5c6545f1-927c-4a9d-afb8-1c135a17680e",
+              "leftValue": "={{ $json.priority }}",
+              "rightValue": "high",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        960,
+        176
+      ],
+      "id": "31eb217e-367f-4c0b-b9cb-cc8cfc1d0076",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "resume": "form",
+        "incomingAuthentication": "basicAuth",
+        "formTitle": "FlowForge AI - Human Approval",
+        "formDescription": "A high-priority customer request requires human review. Please approve or reject this request.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "decision"
+            },
+            {
+              "fieldLabel": "decision",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "approved"
+                  },
+                  {
+                    "option": "rejected"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        976,
+        -288
+      ],
+      "id": "0a92ab76-2d22-4791-8975-babcf990fa3f",
+      "name": "Wait for Human Approval",
+      "webhookId": "31dec332-8d75-401e-a45d-3eedc3fdcbf0",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "ILzMgqTq6u0csqJ0",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "e9f2c39d-23e6-455d-be57-f208e8571b81",
+              "leftValue": "={{ $json.decision }}",
+              "rightValue": "approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1648,
+        -288
+      ],
+      "id": "ec4b64e3-a5d9-4d3f-a0f9-9456d951df3f",
+      "name": "Check Human Approval"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ee783383-c47f-4337-a797-a4775b2389e9",
+              "name": "approval_url",
+              "value": "={{ $execution.resumeFormUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1120,
+        -96
+      ],
+      "id": "d13e8481-6355-44da-83f9-c85a375c0f6f",
+      "name": "Prepare Approval Request"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "customer_requests",
+          "mode": "list",
+          "cachedResultName": "customer_requests"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request_id": "={{ $('Webhook').first().json.body.request_id }}",
+            "customer_name": "={{ $('Webhook').first().json.body.customer_name }}",
+            "email": "={{ $('Webhook').first().json.body.email }}",
+            "message": "={{ $('Webhook').first().json.body.message }}",
+            "priority": "={{ $('Webhook').first().json.body.priority }}",
+            "status": "rejected",
+            "approval_decision": "rejected",
+            "approval_timestamp": "={{ $json.submittedAt }}"
+          },
+          "matchingColumns": [
+            "request_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "department",
+              "displayName": "department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "response",
+              "displayName": "response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "approval_decision",
+              "displayName": "approval_decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "approved_by",
+              "displayName": "approved_by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "approval_timestamp",
+              "displayName": "approval_timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        1952,
+        -432
+      ],
+      "id": "a6d5e051-c587-4724-a3a1-6126a18f1bd0",
+      "name": "Save Rejected Request",
+      "credentials": {
+        "postgres": {
+          "id": "YOY5ysAb7BL7Ryep",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "flowforge-n8n:5678",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate",
+            "connection": "keep-alive",
+            "user-agent": "python-httpx/0.28.1",
+            "x-flowforge-webhook-secret": "REPLACE_WITH_YOUR_WEBHOOK_SECRET",
+            "content-length": "231",
+            "content-type": "application/json"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "request_id": "b12c2cc2-c3bb-44fb-9696-189e79cebbe4",
+            "customer_name": "Final Secure Test",
+            "email": "securetest@example.com",
+            "message": "I need help with my invoice.",
+            "priority": "medium",
+            "created_at": "2026-11-13T21:37:31.868662+00:00"
+          },
+          "webhookUrl": "http://localhost:5678/webhook/customer-request",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Valid Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invalid Request.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invalid Request.": {
+      "main": [
+        []
+      ]
+    },
+    "Valid Request": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "AI Classification Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Classification Result": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Order Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Billing Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Technical Support Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "General Inquiry Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Billing Response": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order Response": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical Support Response": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "General Inquiry Response": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Human Approval": {
+      "main": [
+        [
+          {
+            "node": "Check Human Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Human Approval": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Rejected Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Wait for Human Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5a277354-cf9e-4788-9fe3-dad1821f4917",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6a95e690341bf886ca34ff5841f6ccfaadf081dc5538c4bbb670139d881fd8fd"
+  },
+  "nodeGroups": [],
+  "id": "pMQDmXWgkuZOoFJR",
+  "tags": []
+}

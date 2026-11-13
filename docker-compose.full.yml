@@ -1,0 +1,90 @@
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: flowforge-full-postgres
+
+    environment:
+      POSTGRES_USER: flowforge
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_DB: flowforge_db
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - flowforge-internal
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flowforge -d flowforge_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: flowforge-full-n8n
+
+    ports:
+      - "127.0.0.1:5679:5678"
+
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: flowforge_db
+      DB_POSTGRESDB_USER: flowforge
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?Set N8N_ENCRYPTION_KEY}
+
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      WEBHOOK_URL: http://localhost:5679/
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - flowforge-internal
+
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: flowforge-ai-api:latest
+    container_name: flowforge-full-api
+
+    ports:
+      - "127.0.0.1:8006:8000"
+
+    environment:
+      N8N_WEBHOOK_URL: http://n8n:5678/webhook/customer-request
+      FLOWFORGE_API_KEY: ${FLOWFORGE_API_KEY:?Set FLOWFORGE_API_KEY}
+      N8N_WEBHOOK_SECRET: ${N8N_WEBHOOK_SECRET:?Set N8N_WEBHOOK_SECRET}
+
+    depends_on:
+      - n8n
+
+    networks:
+      - flowforge-internal
+
+    restart: unless-stopped
+
+networks:
+  flowforge-internal:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  n8n_data:
