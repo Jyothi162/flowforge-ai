@@ -1,4 +1,4 @@
-# FlowForge AI — Intelligent Business Automation Platform
+﻿# FlowForge AI — Intelligent Business Automation Platform
 
 FlowForge AI is an AI-powered business automation platform that automates customer request processing using **FastAPI, n8n, Ollama (Llama 3.2), PostgreSQL, and Docker**.
 
@@ -113,6 +113,22 @@ FlowForge AI demonstrates how organizations can combine workflow automation, loc
 
 The request submission endpoint requires an `X-API-Key` header.
 
+### FastAPI Swagger Documentation
+
+FlowForge AI provides an interactive REST API using FastAPI and Swagger UI.
+
+![FlowForge AI FastAPI Swagger](screenshots/flowforge-fastapi-swagger.png)
+
+### API Capabilities
+
+- **GET /** — Returns application information.
+- **GET /health** — Checks API availability.
+- **POST /requests** — Accepts customer requests and forwards them to n8n.
+- **API-Key Authentication** — Protects customer request submission using the `X-API-Key` header.
+- **Request Validation** — Uses Pydantic to validate incoming customer data.
+- **Workflow Integration** — Connects FastAPI with the authenticated n8n webhook.
+
+The Swagger interface allows developers to explore API endpoints and request schemas.
 ## Security
 
 FlowForge AI implements several security controls:
@@ -223,3 +239,4 @@ The final Basic Auth approval challenge and complete standalone Docker Compose d
 FlowForge AI demonstrates practical skills in **AI automation engineering, LLM integration, workflow orchestration, backend development, database integration, and human-in-the-loop business processes**.
 
 It is designed as a portfolio project showcasing how AI can be integrated into real-world business automation workflows.
+
