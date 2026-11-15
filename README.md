@@ -101,7 +101,7 @@ FlowForge AI uses n8n to orchestrate customer request processing, AI classificat
 
 FlowForge AI demonstrates how organizations can combine workflow automation, local LLMs, API integration, and human oversight to reduce repetitive customer request handling.
 
-```
+
 
 ## API Endpoints
 
