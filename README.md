@@ -80,6 +80,29 @@ Priority Evaluation
        PostgreSQL Status Update
 ```
 
+## n8n Workflow Architecture
+
+FlowForge AI uses n8n to orchestrate customer request processing, AI classification, human approval, and database operations.
+
+![FlowForge AI n8n Workflow](screenshots/flowforge-n8n-workflow.png)
+
+### How the Workflow Works
+
+1. **Customer Request:** FastAPI receives and validates incoming requests using API-key authentication.
+2. **Workflow Trigger:** FastAPI forwards the request to the authenticated n8n webhook.
+3. **Priority Check:** n8n evaluates whether the request requires human approval.
+4. **Human Approval:** High-priority requests wait for an approval or rejection decision.
+5. **Database Storage:** Approved and normal-priority requests are stored in PostgreSQL.
+6. **AI Classification:** Ollama with Llama 3.2 classifies the customer request.
+7. **Department Routing:** n8n routes requests to Order, Billing, Technical Support, or General Inquiry.
+8. **Status Update:** PostgreSQL records the processing result. Rejected requests follow a separate rejection path.
+
+### Business Value
+
+FlowForge AI demonstrates how organizations can combine workflow automation, local LLMs, API integration, and human oversight to reduce repetitive customer request handling.
+
+```
+
 ## API Endpoints
 
 | Method | Endpoint | Description |
